@@ -1,3 +1,5 @@
+const http = require('http');
+http.createServer((req, res) => res.end('Bot is running')).listen(process.env.PORT || 3000);
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const cron = require('node-cron');
@@ -217,7 +219,10 @@ D) Two days ago
 ];
 const client = new Client({
   authStrategy: new LocalAuth(),
-  puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+  puppeteer: {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--no-first-run', '--no-zygote', '--single-process', '--disable-extensions']
+  }
 });
 client.on('qr', qr => {
   qrcode.generate(qr, { small: true });
