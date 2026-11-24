@@ -1,11 +1,5 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.get('/', (req, res) => res.send('البوت شغال ✅'));
-app.listen(PORT, () => console.log('Server on ' + PORT));
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -20,7 +14,6 @@ const client = new Client({
 });
 
 client.on('qr', (qr) => {
-  console.log('QR_RECEIVED');
   qrcode.generate(qr, { small: true });
 });
 
@@ -28,17 +21,10 @@ client.on('ready', () => {
   console.log('البوت جاهز ✅');
 });
 
-client.on('auth_failure', (msg) => {
-  console.log('فشل تسجيل الدخول', msg);
-});
-
-// --- الكويز ---
 const questions = [
   { q: "ما هي عاصمة السودان؟\n1- الخرطوم\n2- مدني\n3- بورتسودان", a: "1" },
-  { q: "كم عدد أيام الأسبوع؟\n1- 5\n2- 6\n3- 7", a: "3" },
-  { q: "ما هو أكبر كوكب؟\n1- الأرض\n2- المشتري\n3- المريخ", a: "2" },
   { q: "كم 2 + 2 ؟\n1- 3\n2- 4\n3- 5", a: "2" },
-  { q: "ما هي لغة السودان الرسمية؟\n1- الفرنسية\n2- العربية\n3- الإنجليزية", a: "2" },
+  { q: "ما هو أكبر كوكب؟\n1- الأرض\n2- المشتري\n3- المريخ", a: "2" },
 ];
 
 let users = {};
@@ -70,10 +56,6 @@ client.on('message', async (msg) => {
       } else {
         await msg.reply(`خلص الكويز 🎉\nنتيجتك: ${u.score} من ${questions.length}`);
         delete users[chatId];
-      }
-    } else {
-      if (text === 'السلام عليكم' || text === 'سلام' || text === 'hi' || text === 'هاي') {
-        await msg.reply('وعليكم السلام 😊 اكتب *كويز* عشان نبدأ');
       }
     }
   } catch (e) {
